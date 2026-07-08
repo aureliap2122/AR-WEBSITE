@@ -1,15 +1,1330 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js"></script>
-  </head>
-  <body>
-    <a-scene embedded arjs>
-      <a-marker preset="hiro">
-        <a-box position="0 0.5 0" color="red"></a-box>
-      </a-marker>
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Distribusi AR — Panduan Instalasi 3D Material PLN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  --blue-950:#071522;
+  --blue-900:#0A2A45;
+  --blue-800:#0F3A63;
+  --blue-700:#154C82;
+  --blue-600:#1D63A6;
+  --blue-500:#2E7DC9;
+  --blue-100:#DCE9F7;
+  --yellow:#FFC629;
+  --yellow-dark:#E0A800;
+  --amber:#F2870D;
+  --red:#E5312D;
+  --ink:#0D1B26;
+  --ink-soft:#43586b;
+  --paper:#F3F6F9;
+  --paper-dim:#E6ECF2;
+  --white:#FFFFFF;
+  --line: rgba(13,27,38,0.10);
+  --shell-w: 460px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(46,125,201,.25), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 42px),
+    var(--blue-950);
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:28px 14px;
+}
+.brand-back{
+  position:fixed; inset:0; z-index:-1;
+}
+#shell{
+  width:100%;
+  max-width:var(--shell-w);
+  background:var(--paper);
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06);
+  display:flex;
+  flex-direction:column;
+  height:min(880px, calc(100vh - 56px));
+  position:relative;
+}
+/* ---------- topbar ---------- */
+#topbar{
+  flex:0 0 auto;
+  background:var(--blue-900);
+  color:var(--white);
+  padding:16px 16px 14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  position:relative;
+  z-index:5;
+}
+#topbar .back-btn{
+  width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer;
+  color:var(--white);
+}
+#topbar .back-btn svg{width:18px;height:18px;}
+#topbar .logo-badge{
+  width:34px;height:34px;border-radius:50%;background:var(--blue-600);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.15);
+}
+#topbar .logo-badge svg{width:19px;height:19px;}
+#topbar .title-block{flex:1 1 auto; min-width:0;}
+#topbar .eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.09em;
+  color:var(--yellow); text-transform:uppercase; opacity:.9;
+}
+#topbar h1{
+  font-family:'Big Shoulders Display',sans-serif; font-weight:700; font-size:20px;
+  margin:0; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+#topbar .top-action{
+  width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12); display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex:0 0 auto;
+}
+#topbar .top-action svg{width:17px;height:17px;}
+
+/* ---------- screen ---------- */
+#screen{
+  flex:1 1 auto;
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:var(--paper);
+  -webkit-overflow-scrolling:touch;
+  position:relative;
+}
+#screen::-webkit-scrollbar{width:0;}
+
+/* ---------- bottom nav ---------- */
+#bottomnav{
+  flex:0 0 auto;
+  display:flex;
+  background:var(--white);
+  border-top:1px solid var(--line);
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  position:relative; z-index:5;
+}
+.nav-btn{
+  flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:6px 2px; cursor:pointer; color:#9AA9B6; font-family:'Inter',sans-serif; font-size:10.5px; font-weight:600;
+}
+.nav-btn svg{width:21px;height:21px;}
+.nav-btn.active{color:var(--blue-700);}
+.nav-btn .dot{
+  width:4px;height:4px;border-radius:50%;background:var(--yellow); margin-top:-1px;
+  opacity:0; transform:scale(0);
+  transition:all .18s ease;
+}
+.nav-btn.active .dot{opacity:1; transform:scale(1);}
+
+/* ---------- generic pieces ---------- */
+.px{padding-left:18px;padding-right:18px;}
+.section-title{
+  font-family:'Big Shoulders Display',sans-serif; font-weight:700; font-size:19px; color:var(--blue-900);
+  margin:0 0 12px; letter-spacing:.01em;
+}
+.section-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
+.section-row .section-title{margin-bottom:0;}
+.link-more{font-size:12px;font-weight:700;color:var(--blue-600);text-decoration:none;font-family:'Inter';cursor:pointer;}
+
+/* search */
+.search-bar{
+  display:flex;align-items:center;gap:10px;background:var(--white);
+  border:1.5px solid var(--line); border-radius:14px; padding:12px 14px; margin:16px 18px 6px;
+}
+.search-bar svg{width:18px;height:18px;color:var(--ink-soft);flex:0 0 auto;}
+.search-bar input{
+  border:none;outline:none;flex:1;font-family:'Inter';font-size:14px;color:var(--ink);background:transparent;
+}
+.search-bar input::placeholder{color:#9AA9B6;font-weight:500;}
+
+/* hero */
+.hero-wrap{margin:14px 18px 22px; border-radius:22px; overflow:hidden; position:relative;
+  background:
+    radial-gradient(circle at 75% 15%, rgba(46,125,201,.55), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 28px),
+    linear-gradient(160deg, var(--blue-800), var(--blue-950));
+}
+.hero-canvas-holder{width:100%;height:200px;position:relative;touch-action:none;}
+.hero-canvas-holder canvas{display:block;width:100%!important;height:100%!important;}
+.hero-drag-hint{
+  position:absolute; left:14px; bottom:12px; display:flex; align-items:center; gap:6px;
+  font-family:'IBM Plex Mono'; font-size:10px; color:rgba(255,255,255,.75); letter-spacing:.03em;
+}
+.hero-drag-hint svg{width:13px;height:13px;}
+.hero-text{padding:2px 18px 20px;}
+.hero-eyebrow{font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.1em;color:var(--yellow);text-transform:uppercase;font-weight:600;}
+.hero-title{font-family:'Big Shoulders Display';font-weight:800;font-size:26px;color:#fff;line-height:1.05;margin:6px 0 8px;}
+.hero-sub{font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.5;margin:0 0 16px;max-width:34ch;}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.hero-chip{
+  display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.16); color:#fff; font-size:10.5px; font-weight:600;
+  padding:7px 10px; border-radius:100px;
+}
+.hero-chip svg{width:13px;height:13px;color:var(--yellow);}
+
+/* category grid */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:0 18px 22px;}
+.cat-card{
+  background:var(--white); border-radius:16px; padding:14px; cursor:pointer;
+  border:1px solid var(--line); transition:transform .12s ease;
+  display:flex; flex-direction:column; gap:10px;
+}
+.cat-card:active{transform:scale(.97);}
+.cat-icon{
+  width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+}
+.cat-icon svg{width:20px;height:20px;}
+.cat-card h3{font-family:'Big Shoulders Display';font-size:16px;font-weight:700;margin:0;color:var(--blue-900);line-height:1.15;}
+.cat-card p{font-size:11px;color:var(--ink-soft);margin:0;line-height:1.4;}
+.cat-count{font-family:'IBM Plex Mono';font-size:10px;color:var(--blue-600);font-weight:600;}
+
+/* continue learning card */
+.continue-card{
+  margin:0 18px 24px; background:var(--white); border:1px solid var(--line); border-radius:18px;
+  padding:14px; display:flex; gap:12px; align-items:center; cursor:pointer;
+}
+.continue-thumb{
+  width:56px;height:56px;border-radius:13px;flex:0 0 auto;
+  background:linear-gradient(150deg,var(--blue-700),var(--blue-900));
+  display:flex;align-items:center;justify-content:center;
+}
+.continue-thumb svg{width:26px;height:26px;color:var(--yellow);}
+.continue-body{flex:1;min-width:0;}
+.continue-body .lbl{font-size:10px;font-weight:700;color:var(--blue-600);text-transform:uppercase;letter-spacing:.04em;font-family:'IBM Plex Mono';}
+.continue-body h4{font-family:'Big Shoulders Display';font-size:16px;margin:3px 0 6px;color:var(--blue-900);}
+.progress-track{height:6px;border-radius:6px;background:var(--paper-dim);overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue-500),var(--yellow));border-radius:6px;}
+.continue-pct{font-family:'IBM Plex Mono';font-size:11px;color:var(--ink-soft);margin-top:5px;}
+.continue-arrow{flex:0 0 auto;color:var(--blue-600);}
+.continue-arrow svg{width:18px;height:18px;}
+
+/* filter chips */
+.chip-row{display:flex; gap:8px; overflow-x:auto; padding:16px 18px 4px; scrollbar-width:none;}
+.chip-row::-webkit-scrollbar{display:none;}
+.filter-chip{
+  flex:0 0 auto; padding:8px 14px; border-radius:100px; border:1.5px solid var(--line); background:var(--white);
+  font-size:12.5px; font-weight:700; color:var(--ink-soft); cursor:pointer; white-space:nowrap; font-family:'Inter';
+}
+.filter-chip.active{background:var(--blue-900); border-color:var(--blue-900); color:#fff;}
+
+/* item grid (catalog) */
+.item-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 18px 26px;}
+.item-card{
+  background:var(--white); border:1px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer;
+}
+.item-thumb{
+  height:96px; position:relative; display:flex;align-items:center;justify-content:center;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,60,95,.06) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(90deg, rgba(20,60,95,.06) 0 1px, transparent 1px 12px),
+    var(--blue-100);
+}
+.item-thumb svg{width:38px;height:38px;}
+.badge-3d{
+  position:absolute; top:7px; right:7px; background:var(--blue-900); color:var(--yellow);
+  font-family:'IBM Plex Mono'; font-size:8.5px; font-weight:600; padding:3px 6px; border-radius:6px; letter-spacing:.03em;
+}
+.badge-level{
+  position:absolute; top:7px; left:7px; font-family:'IBM Plex Mono'; font-size:8.5px; font-weight:700;
+  padding:3px 6px; border-radius:6px; letter-spacing:.02em;
+}
+.lvl-TM{background:var(--blue-600);color:#fff;}
+.lvl-TR{background:var(--amber);color:#fff;}
+.lvl-mix{background:var(--ink);color:#fff;}
+.item-info{padding:10px 11px 12px;}
+.item-info h4{font-family:'Big Shoulders Display';font-size:14.5px;font-weight:700;margin:0 0 3px;color:var(--blue-900);line-height:1.15;}
+.item-info .code{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--ink-soft);}
+.empty-msg{padding:40px 18px;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+/* detail screen */
+.viewer-wrap{
+  position:relative; height:300px; background:
+    radial-gradient(circle at 70% 10%, rgba(46,125,201,.18), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(15,58,99,.07) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(15,58,99,.07) 0 1px, transparent 1px 22px),
+    var(--blue-100);
+  touch-action:none;
+}
+.viewer-wrap canvas{width:100%!important;height:100%!important;display:block;}
+.viewer-controls{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:7px;}
+.vc-btn{
+  width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);
+  border:1px solid rgba(15,58,99,.12); display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blue-900);
+}
+.vc-btn svg{width:16px;height:16px;}
+.viewer-hint{
+  position:absolute;left:14px;bottom:12px;display:flex;align-items:center;gap:6px;
+  font-family:'IBM Plex Mono';font-size:10px;color:var(--blue-800);background:rgba(255,255,255,.7);
+  padding:5px 9px;border-radius:100px;
+}
+.viewer-hint svg{width:12px;height:12px;}
+.detail-body{padding:20px 18px 100px;}
+.detail-tags{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.tag{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;padding:4px 9px;border-radius:7px;}
+.tag-cat{background:var(--blue-100);color:var(--blue-800);}
+.detail-title{font-family:'Big Shoulders Display';font-weight:800;font-size:27px;color:var(--blue-900);margin:0 0 4px;line-height:1.05;}
+.detail-code{font-family:'IBM Plex Mono';font-size:12px;color:var(--ink-soft);margin-bottom:16px;}
+.spec-row{display:flex;gap:10px;margin-bottom:18px;}
+.spec-box{flex:1;background:var(--white);border:1px solid var(--line);border-radius:13px;padding:10px 8px;text-align:center;}
+.spec-box svg{width:17px;height:17px;color:var(--blue-600);margin-bottom:5px;}
+.spec-box .v{font-family:'Big Shoulders Display';font-weight:700;font-size:15px;color:var(--blue-900);}
+.spec-box .l{font-size:9.5px;color:var(--ink-soft);font-weight:600;}
+.detail-desc{font-size:13.5px;line-height:1.65;color:var(--ink);margin-bottom:22px;}
+.detail-desc b{color:var(--blue-900);}
+.cta-stack{display:flex;flex-direction:column;gap:10px;}
+.btn-primary{
+  background:var(--blue-900); color:#fff; border:none; border-radius:14px; padding:15px 16px;
+  font-family:'Inter'; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px;
+  cursor:pointer;
+}
+.btn-primary svg{width:17px;height:17px;color:var(--yellow);}
+.btn-secondary{
+  background:#fff; color:var(--blue-900); border:1.5px solid var(--blue-900); border-radius:14px; padding:14px 16px;
+  font-family:'Inter'; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
+}
+.btn-secondary svg{width:16px;height:16px;}
+.btn-disabled{
+  background:var(--paper-dim); color:#93a3b0; border:1.5px dashed #c3cfd8; border-radius:14px; padding:14px 16px;
+  font-family:'Inter'; font-weight:700; font-size:12.5px; text-align:center;
+}
+
+/* guide screen */
+#guide-canvas-wrap{position:relative; height:44vh; min-height:260px; background:var(--blue-950); touch-action:none; overflow:hidden;}
+#guide-canvas-wrap canvas{width:100%!important;height:100%!important;display:block;}
+.guide-progress{position:absolute; top:0; left:0; right:0; display:flex; gap:5px; padding:14px 16px 0;}
+.guide-progress .seg{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden;}
+.guide-progress .seg i{display:block;height:100%;width:0;background:var(--yellow);border-radius:4px;transition:width .3s ease;}
+.guide-topline{position:absolute; top:26px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:center;}
+.guide-steplabel{font-family:'IBM Plex Mono';font-size:10.5px;color:rgba(255,255,255,.65);letter-spacing:.05em;}
+.ar-toggle{
+  display:flex;align-items:center;gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22);
+  color:#fff; font-family:'Inter'; font-size:11px; font-weight:700; padding:6px 11px; border-radius:100px; cursor:pointer;
+}
+.ar-toggle.on{background:var(--yellow);color:var(--blue-950);border-color:var(--yellow);}
+.ar-toggle svg{width:13px;height:13px;}
+.guide-vc{position:absolute; right:12px; bottom:12px; display:flex; flex-direction:column; gap:7px;}
+.guide-parttag{
+  position:absolute; left:16px; bottom:14px; background:rgba(255,198,41,.95); color:var(--blue-950);
+  font-family:'IBM Plex Mono'; font-size:10.5px; font-weight:700; padding:6px 10px; border-radius:9px; max-width:70%;
+}
+.guide-sheet{padding:20px 18px 110px;}
+.guide-step-eyebrow{font-family:'IBM Plex Mono';font-size:10.5px;color:var(--blue-600);font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.guide-step-title{font-family:'Big Shoulders Display';font-weight:800;font-size:23px;color:var(--blue-900);margin:5px 0 10px;line-height:1.1;}
+.guide-step-text{font-size:13.5px;line-height:1.65;color:var(--ink);margin-bottom:18px;}
+.parts-list{margin-bottom:8px;}
+.parts-list h5{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin:0 0 9px;font-weight:700;}
+.part-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
+.part-row:last-child{border-bottom:none;}
+.part-check{
+  width:21px;height:21px;border-radius:7px;background:var(--yellow);display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+}
+.part-check svg{width:12px;height:12px;color:var(--blue-950);}
+.part-row span{font-size:12.5px;font-weight:600;color:var(--ink);}
+.guide-nav{
+  position:absolute; left:0; right:0; bottom:0; background:linear-gradient(to top, var(--paper) 60%, rgba(243,246,249,0));
+  padding:18px 18px calc(16px + env(safe-area-inset-bottom));
+  display:flex; gap:10px;
+}
+.nav-step-btn{
+  flex:1; border:none; border-radius:14px; padding:14px; font-family:'Inter'; font-weight:700; font-size:13.5px; cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.nav-step-btn svg{width:15px;height:15px;}
+.nsb-prev{background:#fff;color:var(--blue-900);border:1.5px solid var(--line)!important;}
+.nsb-next{background:var(--blue-900);color:#fff;}
+.nsb-next svg{color:var(--yellow);}
+.nsb-finish{background:linear-gradient(90deg,var(--blue-700),var(--blue-900));color:#fff;}
+
+/* AR overlay illustration */
+.ar-scene-bg{position:absolute;inset:0;opacity:0;transition:opacity .35s ease;pointer-events:none;}
+.ar-scene-bg.show{opacity:1;}
+.ar-reticle{
+  position:absolute; width:150px; height:150px; border:1.5px dashed rgba(255,198,41,.7); border-radius:16px;
+  top:50%;left:50%;transform:translate(-50%,-50%); opacity:0; transition:opacity .3s ease;
+}
+.ar-reticle.show{opacity:1; animation:pulseReticle 2.4s ease-in-out infinite;}
+@keyframes pulseReticle{0%,100%{border-color:rgba(255,198,41,.4);}50%{border-color:rgba(255,198,41,.9);}}
+.ar-note{
+  position:absolute; top:60px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.45);
+  color:#fff; font-family:'IBM Plex Mono'; font-size:9.5px; padding:6px 12px; border-radius:100px;
+  opacity:0; transition:opacity .3s ease; white-space:nowrap;
+}
+.ar-note.show{opacity:1;}
+
+/* progress screen */
+.ring-card{margin:16px 18px 20px; background:linear-gradient(150deg,var(--blue-800),var(--blue-950)); border-radius:20px; padding:22px; display:flex; align-items:center; gap:18px;}
+.ring-card svg{flex:0 0 auto;}
+.ring-info{color:#fff;}
+.ring-info .big{font-family:'Big Shoulders Display';font-weight:800;font-size:26px;}
+.ring-info .small{font-size:11.5px;color:rgba(255,255,255,.7);margin-top:3px;line-height:1.5;}
+.module-row{
+  margin:0 18px 12px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px; display:flex; gap:12px; align-items:center; cursor:pointer;
+}
+.module-icon{width:44px;height:44px;border-radius:12px;background:var(--blue-100);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.module-icon svg{width:21px;height:21px;color:var(--blue-700);}
+.module-body{flex:1;min-width:0;}
+.module-body h4{font-family:'Big Shoulders Display';font-size:15px;margin:0 0 5px;color:var(--blue-900);}
+.status-chip{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono';display:inline-block;margin-top:6px;}
+.st-done{background:#DCF3E3;color:#1C7A43;}
+.st-progress{background:#FFF1CE;color:#9A6B00;}
+.st-notstarted{background:var(--paper-dim);color:#7B8A97;}
+
+/* profile screen */
+.profile-card{margin:18px; background:linear-gradient(150deg,var(--blue-800),var(--blue-950)); border-radius:20px; padding:22px; color:#fff; display:flex; gap:14px; align-items:center;}
+.avatar{width:56px;height:56px;border-radius:16px;background:var(--yellow);color:var(--blue-950);display:flex;align-items:center;justify-content:center;font-family:'Big Shoulders Display';font-weight:800;font-size:20px;flex:0 0 auto;}
+.profile-card h3{font-family:'Big Shoulders Display';font-size:18px;margin:0 0 3px;}
+.profile-card p{font-size:11.5px;color:rgba(255,255,255,.7);margin:0;}
+.settings-list{margin:0 18px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+.settings-row{display:flex;align-items:center;gap:12px;padding:14px 15px;border-bottom:1px solid var(--line);cursor:pointer;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row svg{width:18px;height:18px;color:var(--blue-700);}
+.settings-row span{flex:1;font-size:13px;font-weight:600;}
+.settings-row .chev{width:14px;height:14px;color:#B7C3CC;}
+
+/* toast */
+#toast{
+  position:absolute; left:50%; bottom:86px; transform:translateX(-50%) translateY(20px); background:var(--blue-950); color:#fff;
+  font-size:12.5px; font-weight:600; padding:11px 18px; border-radius:100px; opacity:0; pointer-events:none; transition:all .25s ease; z-index:50;
+  display:flex; align-items:center; gap:8px; white-space:nowrap;
+}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+#toast svg{width:14px;height:14px;color:var(--yellow);}
+
+@media (max-width:480px){
+  body{padding:0;}
+  #shell{border-radius:0;height:100vh;max-width:100%;}
+}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="topbar">
+    <div class="back-btn" id="backBtn" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <div class="logo-badge" id="logoBadge">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" fill="#FFC629"/></svg>
+    </div>
+    <div class="title-block">
+      <div class="eyebrow" id="topEyebrow">PLN · DISTRIBUSI TM/TR</div>
+      <h1 id="topTitle">Distribusi AR</h1>
+    </div>
+    <div class="top-action" id="searchBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </div>
+  </div>
+
+  <div id="screen"></div>
+
+  <div id="bottomnav">
+    <button class="nav-btn" data-route="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+      <span>Beranda</span><i class="dot"></i>
+    </button>
+    <button class="nav-btn" data-route="catalog">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span>Katalog</span><i class="dot"></i>
+    </button>
+    <button class="nav-btn" data-route="progress">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20" stroke-opacity="0"/><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <span>Progres</span><i class="dot"></i>
+    </button>
+    <button class="nav-btn" data-route="profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 5-6 8-6s6.4 2 8 6"/></svg>
+      <span>Profil</span><i class="dot"></i>
+    </button>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const ICONS = {
+  konstruksi: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M24 44V10"/><path d="M9 14h30"/><circle cx="14" cy="14" r="2.6" fill="currentColor" stroke="none"/><circle cx="24" cy="14" r="2.6" fill="currentColor" stroke="none"/><circle cx="34" cy="14" r="2.6" fill="currentColor" stroke="none"/></svg>`,
+  proteksi: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M24 5l15 5v11c0 10-6.5 17.5-15 22-8.5-4.5-15-12-15-22V10z"/><path d="M26 16l-6 9h5l-4 8 9-10h-5z" fill="currentColor" stroke="none"/></svg>`,
+  guy: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M22 6v30"/><path d="M22 12L8 40"/><rect x="6" y="40" width="8" height="4" rx="1"/><circle cx="22" cy="6" r="2.6" fill="currentColor" stroke="none"/></svg>`,
+  konduktor: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 16c6 0 6 8 12 8s6-8 12-8 6 8 12 8"/><path d="M5 30c6 0 6 8 12 8s6-8 12-8 6 8 12 8"/></svg>`,
+  trafo: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><rect x="7" y="18" width="34" height="20" rx="2"/><path d="M17 18v-8M31 18v-8"/><circle cx="17" cy="8" r="2" fill="currentColor" stroke="none"/><circle cx="31" cy="8" r="2" fill="currentColor" stroke="none"/><path d="M12 24h6M12 29h6M12 34h6"/></svg>`,
+  aksesoris: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M24 6l15.6 9v18L24 42 8.4 33V15z"/><circle cx="24" cy="24" r="6.5"/></svg>`,
+};
+const SMALL_ICON = {
+  cube3d: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>`,
+  play: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 4l14 8-14 8V4z" fill="currentColor" stroke="none"/></svg>`,
+  ar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>`,
+  rotate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 21v-5h5"/></svg>`,
+  hand: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11.2V6a1.5 1.5 0 0 1 3 0v7M8 12l-1.8-1.5a1.4 1.4 0 0 0-2 2L8 17c1 2 3 4 6 4h1c3 0 4.5-2.2 4.5-5v-4.5a1.5 1.5 0 0 0-3 0"/></svg>`,
+  zoomin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>`,
+  zoomout: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>`,
+  reset: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 4v5h5"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`,
+  arrowR: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+  arrowL: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>`,
+  layers: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>`,
+  bolt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>`,
+  book: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 18.5V5.5"/></svg>`,
+  info: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>`,
+  help: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.2 2-2.4 3.6M12 17h.01"/></svg>`,
+  logout: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>`,
+};
+
+const CATEGORIES = [
+  {id:'konstruksi', name:'Konstruksi Tiang TM', desc:'Cross arm, pole band, isolator', icon:'konstruksi', color:'var(--blue-600)'},
+  {id:'proteksi',   name:'Proteksi & Pengaman', desc:'Arrester, fuse cut out, PMCB', icon:'proteksi', color:'var(--red)'},
+  {id:'guy',        name:'Guy Wire & Pentanahan', desc:'Anchor block, guy wire', icon:'guy', color:'var(--blue-700)'},
+  {id:'konduktor',  name:'Konduktor & Sambungan', desc:'AAAC, jointing, schoon cable', icon:'konduktor', color:'var(--blue-500)'},
+  {id:'trafo',      name:'Transformator & Kubikel', desc:'Trafo distribusi, kubikel 20kV', icon:'trafo', color:'var(--amber)'},
+  {id:'aksesoris',  name:'Klem & Aksesoris', desc:'Wire clip, bolt & nut, washer', icon:'aksesoris', color:'var(--blue-800)'},
+];
+
+const ITEMS = [
+  {id:'crossarm', name:'Cross Arm TM', cat:'konstruksi', level:'TM', code:'SPLN D3.027-2', pieces:4, shape:'crossArm', guide:'crossarm',
+    blurb:'Palang horizontal yang dipasang di puncak tiang untuk menopang isolator dan konduktor pada jaringan tegangan menengah 20 kV.'},
+  {id:'crossclevis', name:'Cross Arm Clevis', cat:'konstruksi', level:'TM', code:'CAC-16', pieces:2, shape:'clamp', guide:'crossarm',
+    blurb:'Braket penghubung antara cross arm dan pole band yang memungkinkan sudut pemasangan menyesuaikan kontur tiang.'},
+  {id:'isotumpu', name:'Isolator Tumpu', cat:'konstruksi', level:'TM', code:'IT-20kV', pieces:1, shape:'insulatorPost', guide:'crossarm',
+    blurb:'Isolator yang menopang konduktor lurus di atas cross arm sekaligus mengisolasi hantaran bertegangan dari struktur tiang.'},
+  {id:'isotarik', name:'Isolator Tarik', cat:'konstruksi', level:'TM', code:'ISTR-20kV', pieces:1, shape:'insulatorPull', guide:null,
+    blurb:'Isolator rantai yang dipakai pada tiang sudut atau akhir jaringan untuk menahan tarikan konduktor secara aksial.'},
+  {id:'poleband', name:'Pole Band', cat:'konstruksi', level:'TM/TR', code:'PB-M16', pieces:2, shape:'poleBand', guide:'crossarm',
+    blurb:'Sabuk baja yang melingkari tiang sebagai dudukan untuk cross arm, cross arm clevis, atau material konstruksi lain.'},
+  {id:'arrester', name:'Lightning Arrester', cat:'proteksi', level:'TM', code:'LA-20kV', pieces:1, shape:'arrester', guide:'arrester',
+    blurb:'Alat pengaman yang menyalurkan arus surja petir atau surja hubung ke tanah agar peralatan jaringan tidak rusak akibat tegangan lebih.'},
+  {id:'fusecutout', name:'Fuse Cut Out', cat:'proteksi', level:'TM', code:'FCO-20kV', pieces:1, shape:'fuseCutOut', guide:null,
+    blurb:'Pemutus berbasis elemen lebur yang melindungi transformator dari gangguan hubung singkat di sisi tegangan menengah.'},
+  {id:'pmcb', name:'PMCB', cat:'proteksi', level:'TM', code:'PMCB-20kV', pieces:1, shape:'kubikel', guide:null,
+    blurb:'Pemutus beban bermedium yang mengamankan dan memisahkan bagian jaringan tegangan menengah saat terjadi gangguan.'},
+  {id:'anchorblock', name:'Anchor Block', cat:'guy', level:'TM/TR', code:'AB-40x40', pieces:1, shape:'anchorBlock', guide:'guywire',
+    blurb:'Blok penambat berbahan beton yang tertanam dalam tanah sebagai titik jangkar untuk kawat penguat (guy wire).'},
+  {id:'guywire', name:'Guy Wire & Turn Buckle', cat:'guy', level:'TM/TR', code:'GW-SET', pieces:3, shape:'guyWire', guide:'guywire',
+    blurb:'Rangkaian kawat penguat yang menahan tiang dari gaya tarik konduktor, dikencangkan menggunakan turn buckle.'},
+  {id:'transformator', name:'Transformator Distribusi', cat:'trafo', level:'TM/TR', code:'TRAFO-DIST', pieces:9, shape:'transformer', guide:null,
+    blurb:'Peralatan yang memindahkan energi listrik dari tegangan menengah ke tegangan rendah melalui prinsip induksi elektromagnet.'},
+  {id:'kubikel', name:'Kubikel 20 kV', cat:'trafo', level:'TM', code:'KUB-20kV', pieces:1, shape:'kubikel', guide:null,
+    blurb:'Panel pembagi, pemutus, penghubung, dan proteksi yang dipasang pada gardu distribusi bertegangan 20 kV.'},
+  {id:'konduktor', name:'Konduktor AAAC', cat:'konduktor', level:'TM', code:'AAAC-150', pieces:1, shape:'conductor', guide:null,
+    blurb:'Hantaran udara dari aluminium paduan keras yang dipilin bulat, tidak berisolasi, untuk menyalurkan daya pada jaringan distribusi.'},
+  {id:'schooncable', name:'Schoon Cable / Jointing', cat:'konduktor', level:'TR', code:'SC-AL-CU', pieces:1, shape:'connector', guide:null,
+    blurb:'Konektor penyambung dua kabel berbeda material, misalnya aluminium ke tembaga, tanpa menimbulkan masalah kelistrikan atau korosi.'},
+  {id:'boltnut', name:'Bolt & Nut M16', cat:'aksesoris', level:'TM/TR', code:'BN-M16', pieces:2, shape:'boltNut', guide:null,
+    blurb:'Pengencang standar berulir yang menyatukan hampir seluruh material konstruksi distribusi tegangan menengah maupun rendah.'},
+  {id:'wireclip', name:'Wire Clip', cat:'aksesoris', level:'TR', code:'WC-STD', pieces:3, shape:'clamp', guide:null,
+    blurb:'Penjepit kabel yang terdiri dari saddle, U-bolt, dan mur untuk mengikat konduktor pada dudukannya dengan kuat.'},
+  {id:'washer', name:'Washer', cat:'aksesoris', level:'TM/TR', code:'WS-M16', pieces:1, shape:'washer', guide:null,
+    blurb:'Ring pelat tipis yang dipasang di antara mur dan permukaan material untuk menyebarkan tekanan pengencangan secara merata.'},
+];
+
+const GUIDES = {
+  crossarm:{
+    title:'Konstruksi Cross Arm TM (Tumpu)', code:'GUIDE-01', duration:'±25 menit', level:'TM',
+    steps:[
+      {title:'Pasang Pole Band di Tiang', text:'Lingkarkan pole band pada tiang di ketinggian kerja yang telah ditentukan, lalu kencangkan bolt & nut hingga sabuk baja terpasang kuat dan tidak bergeser.', parts:['Pole Band','Bolt & Nut M16']},
+      {title:'Pasang Cross Arm Clevis & Cross Arm', text:'Kaitkan cross arm clevis pada pole band, lalu pasang cross arm secara horizontal pada clevis. Pastikan cross arm rata (waterpass) sebelum dikencangkan penuh.', parts:['Cross Arm Clevis','Cross Arm TM']},
+      {title:'Pasang Isolator Tumpu', text:'Pasang isolator tumpu pada ketiga dudukan di sepanjang cross arm. Isolator inilah yang nantinya menopang dan mengisolasi konduktor dari struktur tiang.', parts:['Isolator Tumpu ×3']},
+      {title:'Ikat Konduktor dengan Preformed Top Tie', text:'Letakkan konduktor di atas isolator tumpu, lalu ikat menggunakan preformed top tie agar posisi konduktor stabil dan tidak bergeser akibat angin atau andongan.', parts:['Konduktor AAAC','Preformed Top Tie']},
+    ]
+  },
+  guywire:{
+    title:'Pemasangan Guy Wire (Anchor Guy)', code:'GUIDE-02', duration:'±35 menit', level:'TM/TR',
+    steps:[
+      {title:'Tanam Anchor Block', text:'Gali lubang pada sudut tarik tiang, lalu tanam anchor block sebagai titik jangkar utama. Pastikan kedalaman dan sudut tanam sesuai standar konstruksi.', parts:['Anchor Block']},
+      {title:'Pasang Guy Rod & Cousen/Timble', text:'Sambungkan guy rod ke lubang anchor block, kaitkan cousen/timble sebagai pelindung lengkung kawat agar guy wire tidak rusak akibat gesekan.', parts:['Guy Rod','Cousen / Timble']},
+      {title:'Pasang Guy Wire Insulator & Turn Buckle', text:'Rangkai guy wire insulator di tengah kawat penguat untuk mengisolasi tegangan sentuh, kemudian sisipkan turn buckle sebagai elemen penyetel kekencangan.', parts:['Guy Wire Insulator','Turn Buckle']},
+      {title:'Tarik dan Kencangkan ke Tiang', text:'Tarik guy wire ke arah tiang, kaitkan ke dudukan atas, lalu putar turn buckle hingga kawat penguat tegang sempurna dan tiang berdiri stabil.', parts:['Guy Wire','Klem Ikat Tiang']},
+    ]
+  },
+  arrester:{
+    title:'Instalasi Lightning Arrester', code:'GUIDE-03', duration:'±20 menit', level:'TM',
+    steps:[
+      {title:'Pasang Bracket Dudukan di Cross Arm', text:'Pasang bracket dudukan arrester pada cross arm, dekat dengan titik sambungan konduktor agar jarak kabel penghubung tetap pendek.', parts:['Bracket Dudukan']},
+      {title:'Pasang Body Arrester ke Bracket', text:'Pasang body lightning arrester pada bracket dengan posisi tegak lurus, lalu kencangkan baut pengikatnya.', parts:['Lightning Arrester']},
+      {title:'Sambungkan Kabel Line ke Terminal Atas', text:'Hubungkan kabel dari konduktor fasa ke terminal atas arrester menggunakan konektor press, memastikan sambungan tidak longgar.', parts:['Konektor Press','Kabel Line']},
+      {title:'Sambungkan Kabel Ground ke Ground Rod', text:'Hubungkan terminal bawah arrester ke ground rod melalui kabel pentanahan, agar arus surja dapat disalurkan sempurna ke tanah.', parts:['Ground Rod','Kabel Pentanahan']},
+    ]
+  }
+};
+
+/* progress state (in-memory, not persisted) */
+const progressState = { crossarm:100, guywire:35, arrester:0 };
+
+/* ============================================================
+   ROUTER STATE
+   ============================================================ */
+const state = { route:'home', params:{}, history:[] };
+
+function go(route, params={}, push=true){
+  if(push) state.history.push({route:state.route, params:state.params});
+  state.route = route; state.params = params;
+  render();
+}
+function goBack(){
+  const prev = state.history.pop();
+  if(prev){ state.route = prev.route; state.params = prev.params; render(); }
+  else { go('home', {}, false); }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.innerHTML = SMALL_ICON.bolt + '<span>'+msg+'</span>';
+  t.classList.add('show');
+  clearTimeout(showToast._tm);
+  showToast._tm = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ============================================================
+   THREE.JS VIEWER ENGINE
+   ============================================================ */
+const Viewer3D = (function(){
+  let renderer=null, scene=null, camera=null, group=null, raf=null, container=null;
+  let sph = {theta:0.7, phi:1.05, radius:4.2};
+  let dragging=false, lastX=0, lastY=0, autoRotate=true, idleTimer=0;
+  let mode='detail'; // 'detail' | 'guide'
+  let currentStep=1;
+  let clock = 0;
+
+  function makeMat(color, opts={}){ return new THREE.MeshStandardMaterial(Object.assign({color, roughness:.55, metalness:.18}, opts)); }
+  const MAT = {
+    steel: makeMat(0x5b6b7a, {metalness:.55, roughness:.35}),
+    steelDark: makeMat(0x37424c, {metalness:.5, roughness:.4}),
+    porcelain: makeMat(0xC9BBA6, {roughness:.45}),
+    porcelainDark: makeMat(0x8a7a63, {roughness:.5}),
+    concrete: makeMat(0x9a9a92, {roughness:.9, metalness:0}),
+    ground: makeMat(0x4b5a3f, {roughness:1, metalness:0}),
+    wood: makeMat(0x7a5a3a, {roughness:.8}),
+    cableDark: makeMat(0x2b2f33, {roughness:.6}),
+    alu: makeMat(0xB9C2C9, {metalness:.6, roughness:.35}),
+    copper: makeMat(0xb5651d, {metalness:.5, roughness:.4}),
+    green: makeMat(0x4f6a5e, {roughness:.5, metalness:.2}),
+    highlight: makeMat(0xFFC629, {emissive:0x8a6400, emissiveIntensity:.6, roughness:.4, metalness:.3}),
+  };
+
+  function cyl(rt, rb, h, mat, seg=20){ return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat); }
+  function box(w,h,d,mat){ return new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat); }
+  function ring(r, tube, mat, seg=24){ return new THREE.Mesh(new THREE.TorusGeometry(r, tube, 10, seg), mat); }
+  function tagged(mesh, step){ mesh.userData.step = step; mesh.userData.baseColor = mesh.material.color ? mesh.material.color.getHex() : null; return mesh; }
+
+  function poleStub(h=2.6){
+    const g = new THREE.Group();
+    const p = cyl(.09,.13,h,MAT.wood,12); p.position.y = h/2; g.add(p);
+    g.userData.step = 0;
+    return g;
+  }
+
+  function partInsulatorPost(scale=1){
+    const g = new THREE.Group();
+    const pin = cyl(.03,.03,.22,MAT.steel); pin.position.y=.11; g.add(pin);
+    const d1 = cyl(.14,.17,.09,MAT.porcelain); d1.position.y=.26; g.add(d1);
+    const d2 = cyl(.11,.14,.08,MAT.porcelain); d2.position.y=.35; g.add(d2);
+    const d3 = cyl(.07,.10,.07,MAT.porcelainDark); d3.position.y=.42; g.add(d3);
+    g.scale.setScalar(scale);
+    return g;
+  }
+  function partInsulatorPull(){
+    const g = new THREE.Group();
+    for(let i=0;i<5;i++){ const t = ring(.09,.035,MAT.porcelain); t.rotation.x=Math.PI/2; t.position.x = i*.18-.36; g.add(t); }
+    const e1 = cyl(.025,.025,.14,MAT.steel); e1.rotation.z=Math.PI/2; e1.position.x=-.55; g.add(e1);
+    const e2 = cyl(.025,.025,.14,MAT.steel); e2.rotation.z=Math.PI/2; e2.position.x=.55; g.add(e2);
+    return g;
+  }
+  function partClamp(){
+    const g = new THREE.Group();
+    const plate = box(.22,.05,.14,MAT.steel); g.add(plate);
+    const ubolt = ring(.09,.018,MAT.steelDark,16); ubolt.rotation.y=Math.PI/2; ubolt.position.y=.06; g.add(ubolt);
+    const cable = cyl(.035,.035,.5,MAT.cableDark); cable.rotation.z=Math.PI/2; cable.position.y=-.02; g.add(cable);
+    return g;
+  }
+  function partPoleBandOnly(){
+    const g = new THREE.Group();
+    const band = ring(.14,.03,MAT.steel,20); band.rotation.x=Math.PI/2; g.add(band);
+    const tab = box(.06,.08,.03,MAT.steelDark); tab.position.set(.15,0,0); g.add(tab);
+    return g;
+  }
+  function partArresterBody(){
+    const g = new THREE.Group();
+    const body = cyl(.09,.11,.55,MAT.porcelainDark); body.position.y=.3; g.add(body);
+    for(let i=0;i<6;i++){ const f = ring(.115,.02,MAT.porcelainDark,16); f.rotation.x=Math.PI/2; f.position.y=.08+i*.09; g.add(f); }
+    const capT = cyl(.06,.06,.06,MAT.steel); capT.position.y=.6; g.add(capT);
+    const capB = cyl(.07,.07,.05,MAT.steel); capB.position.y=.02; g.add(capB);
+    return g;
+  }
+  function partBracket(){
+    const g = new THREE.Group();
+    const arm = box(.05,.05,.3,MAT.steelDark); arm.position.set(0,0,.12); g.add(arm);
+    const stem = box(.05,.28,.05,MAT.steelDark); stem.position.set(0,-.13,0); g.add(stem);
+    return g;
+  }
+  function partAnchorBlock(){
+    const g = new THREE.Group();
+    const soil = new THREE.Mesh(new THREE.CylinderGeometry(.62,.62,.05,28), MAT.ground); soil.position.y=0; g.add(soil);
+    const blk = box(.36,.34,.36,MAT.concrete); blk.position.y=-.15; g.add(blk);
+    const rod = cyl(.028,.028,.5,MAT.steel); rod.position.y=.15; g.add(rod);
+    const eye = ring(.06,.018,MAT.steel,16); eye.position.y=.42; eye.rotation.x=Math.PI/2; g.add(eye);
+    return g;
+  }
+  function partTransformer(){
+    const g = new THREE.Group();
+    const pad = box(1.5,.08,1.0,MAT.concrete); pad.position.y=.04; g.add(pad);
+    const bodyH=.85;
+    const bodyMain = box(1.0,bodyH,.62,MAT.green); bodyMain.position.y=.08+bodyH/2; g.add(bodyMain);
+    for(let s=-1;s<=1;s+=2){ for(let i=0;i<5;i++){ const fin = box(.03,.6,.05,MAT.steelDark); fin.position.set(s*.53, .5, -.24+i*.12); g.add(fin); } }
+    const bushA = cyl(.03,.05,.34,MAT.porcelain); bushA.position.set(-.2,.08+bodyH+.17,0); g.add(bushA);
+    const bushB = cyl(.025,.045,.28,MAT.porcelain); bushB.position.set(.05,.08+bodyH+.14,0); g.add(bushB);
+    const bushC = cyl(.02,.035,.2,MAT.porcelain); bushC.position.set(.28,.08+bodyH+.1,0); g.add(bushC);
+    const conserv = cyl(.11,.11,.55,MAT.green); conserv.rotation.z=Math.PI/2; conserv.position.set(0,.08+bodyH+.02,.36); g.add(conserv);
+    for(let i=0;i<4;i++){ const w = ring(.09,.03,MAT.steelDark,14); w.position.set(-.42+i*.28,.02,.36); g.add(w); }
+    return g;
+  }
+  function partKubikel(){
+    const g = new THREE.Group();
+    const cab = box(.62,1.05,.5,MAT.steel); cab.position.y=.52; g.add(cab);
+    const panel = box(.5,.85,.05,MAT.steelDark); panel.position.set(0,.6,.26); g.add(panel);
+    const led1 = new THREE.Mesh(new THREE.SphereGeometry(.025,10,10), makeMat(0x2ecc71,{emissive:0x145c2c,emissiveIntensity:.8})); led1.position.set(-.15,.95,.29); g.add(led1);
+    const led2 = new THREE.Mesh(new THREE.SphereGeometry(.025,10,10), makeMat(0xe5312d,{emissive:0x7a1a17,emissiveIntensity:.8})); led2.position.set(-.05,.95,.29); g.add(led2);
+    const stripe = box(.5,.06,.052,makeMat(0xFFC629)); stripe.position.set(0,.2,.27); g.add(stripe);
+    return g;
+  }
+  function partConductor(){
+    const g = new THREE.Group();
+    for(let i=0;i<3;i++){ const a = (i/3)*Math.PI*2; const c = cyl(.028,.028,1.2,MAT.alu,10); c.rotation.z=Math.PI/2; c.position.set(0, Math.sin(a)*.035, Math.cos(a)*.035); g.add(c); }
+    return g;
+  }
+  function partConnector(){
+    const g = new THREE.Group();
+    const blk = box(.22,.14,.14,MAT.steel); g.add(blk);
+    const h1 = cyl(.025,.025,.16,MAT.steelDark); h1.rotation.z=Math.PI/2; h1.position.set(-.05,0,0); g.add(h1);
+    const h2 = cyl(.025,.025,.16,MAT.steelDark); h2.rotation.z=Math.PI/2; h2.position.set(.05,0,0); g.add(h2);
+    const cAl = cyl(.045,.045,.4,MAT.alu); cAl.rotation.z=Math.PI/2; cAl.position.set(-.32,0,0); g.add(cAl);
+    const cCu = cyl(.04,.04,.4,MAT.copper); cCu.rotation.z=Math.PI/2; cCu.position.set(.32,0,0); g.add(cCu);
+    return g;
+  }
+  function partBoltNut(){
+    const g = new THREE.Group();
+    const shaft = cyl(.035,.035,.5,MAT.steel,10); shaft.rotation.z=Math.PI/2; g.add(shaft);
+    const nut = new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.06,6), MAT.steelDark); nut.rotation.z=Math.PI/2; nut.position.x=.1; g.add(nut);
+    const wsh = ring(.065,.012,MAT.steel,16); wsh.rotation.y=Math.PI/2; wsh.position.x=.16; g.add(wsh);
+    return g;
+  }
+  function partWasher(){
+    const g = new THREE.Group();
+    const bolt = cyl(.03,.03,.5,MAT.steel,10); bolt.rotation.z=Math.PI/2; g.add(bolt);
+    const wsh = ring(.09,.02,MAT.steel,20); wsh.rotation.y=Math.PI/2; g.add(wsh);
+    return g;
+  }
+  function partFuseCutOut(){
+    const g = new THREE.Group();
+    const tube = cyl(.045,.06,.5,MAT.porcelain); tube.rotation.z=Math.PI/4.2; tube.position.set(.05,.15,0); g.add(tube);
+    const link = cyl(.012,.012,.22,MAT.steelDark); link.rotation.z=Math.PI/4.2; link.position.set(-.05,-.12,0); g.add(link);
+    const capT = cyl(.055,.055,.05,MAT.steel); capT.position.set(.22,.36,0); g.add(capT);
+    return g;
+  }
+  function partGuyHardware(){
+    const g = new THREE.Group();
+    const rod = cyl(.03,.03,.4,MAT.steel); rod.rotation.z=Math.PI/2; g.add(rod);
+    const timble = ring(.07,.02,MAT.steel,16); timble.position.x=-.25; g.add(timble);
+    const buckle = box(.2,.06,.06,MAT.steelDark); buckle.position.x=.05; g.add(buckle);
+    return g;
+  }
+
+  const SHAPE_BUILDERS = {
+    crossArm(scene){
+      const pole = poleStub(2.4); scene.add(pole);
+      const clevis = partClamp(); clevis.scale.set(.7,.7,.7); clevis.position.set(0,2.2,0); tagged(clevis,0); scene.add(clevis);
+      const arm = box(1.6,.09,.09,MAT.steel); arm.position.set(0,2.32,0); tagged(arm,0); scene.add(arm);
+      const support = box(.55,.06,.06,MAT.steelDark); support.rotation.z=.6; support.position.set(-.35,2.05,0); tagged(support,0); scene.add(support);
+      [-.55,0,.55].forEach(x=>{ const ins = partInsulatorPost(1.15); ins.position.set(x,2.36,0); tagged(ins,0); ins.traverse(o=>o.userData.step=0); scene.add(ins); });
+    },
+    clamp(scene){ const p = partClamp(); p.scale.set(1.6,1.6,1.6); scene.add(p); },
+    insulatorPost(scene){ const base = box(.3,.05,.3,MAT.steel); base.position.y=-.02; scene.add(base); const ins = partInsulatorPost(2.1); ins.position.y=0; scene.add(ins); },
+    insulatorPull(scene){ const p = partInsulatorPull(); p.scale.set(1.3,1.3,1.3); scene.add(p); },
+    poleBand(scene){ const pole = poleStub(1.6); scene.add(pole); const band = partPoleBandOnly(); band.scale.set(1.6,1.6,1.6); band.position.y=1.0; scene.add(band); },
+    arrester(scene){
+      const pole = poleStub(2.2); scene.add(pole);
+      const br = partBracket(); br.scale.set(1.2,1.2,1.2); br.position.set(.13,1.9,0); scene.add(br);
+      const ar = partArresterBody(); ar.scale.set(1.3,1.3,1.3); ar.position.set(.32,1.55,0); scene.add(ar);
+    },
+    fuseCutOut(scene){ const pole = poleStub(2.2); scene.add(pole); const br = partBracket(); br.scale.set(1.1,1.1,1.1); br.position.set(.1,1.9,0); scene.add(br); const fc = partFuseCutOut(); fc.scale.set(1.6,1.6,1.6); fc.position.set(.35,1.8,0); scene.add(fc); },
+    anchorBlock(scene){ const p = partAnchorBlock(); p.scale.set(1.5,1.5,1.5); scene.add(p); },
+    guyWire(scene){
+      const pole = poleStub(2.6); scene.add(pole);
+      const anchor = partAnchorBlock(); anchor.scale.set(1.1,1.1,1.1); anchor.position.set(1.5,-1.3,0); scene.add(anchor);
+      const wireLen = Math.sqrt(Math.pow(1.5,2)+Math.pow(2.6+1.15,2));
+      const wire = cyl(.02,.02,wireLen,MAT.steelDark,8);
+      wire.position.set(.75,1.3-.65,0);
+      wire.rotation.z = Math.atan2(1.5, 2.6+1.15) - Math.PI/2;
+      scene.add(wire);
+      const buckle = partGuyHardware(); buckle.scale.set(1.2,1.2,1.2); buckle.position.set(.75,.9,0); buckle.rotation.z = wire.rotation.z; scene.add(buckle);
+    },
+    transformer(scene){ const p = partTransformer(); scene.add(p); },
+    kubikel(scene){ const p = partKubikel(); scene.add(p); },
+    conductor(scene){ const p = partConductor(); p.scale.set(1.6,1.6,1.6); scene.add(p); },
+    connector(scene){ const p = partConnector(); p.scale.set(1.6,1.6,1.6); scene.add(p); },
+    boltNut(scene){ const p = partBoltNut(); p.scale.set(1.8,1.8,1.8); scene.add(p); },
+    washer(scene){ const p = partWasher(); p.scale.set(1.8,1.8,1.8); scene.add(p); },
+  };
+
+  function buildGuideScene(guideId, scene){
+    if(guideId==='crossarm'){
+      const pole = poleStub(2.4); scene.add(pole);
+      const band = partPoleBandOnly(); band.scale.set(1.4,1.4,1.4); band.position.y=2.15; tagged(band,1); band.traverse(o=>o.userData.step=1); scene.add(band);
+      const clevis = partClamp(); clevis.scale.set(.7,.7,.7); clevis.position.set(0,2.22,0); clevis.traverse(o=>o.userData.step=1); scene.add(clevis);
+      const arm = box(1.6,.09,.09,MAT.steel); arm.position.set(0,2.34,0); tagged(arm,2); scene.add(arm);
+      const support = box(.55,.06,.06,MAT.steelDark); support.rotation.z=.6; support.position.set(-.35,2.08,0); tagged(support,2); scene.add(support);
+      [-.55,0,.55].forEach(x=>{ const ins = partInsulatorPost(1.15); ins.position.set(x,2.38,0); ins.traverse(o=>o.userData.step=3); scene.add(ins); });
+      const conductor = partConductor(); conductor.scale.set(1.7,1.7,1.7); conductor.rotation.x=Math.PI/2; conductor.position.set(0,2.6,0); conductor.traverse(o=>o.userData.step=4); scene.add(conductor);
+      return {focus:new THREE.Vector3(0,2.3,0), radius:3.1};
+    }
+    if(guideId==='guywire'){
+      const pole = poleStub(2.6); scene.add(pole);
+      const anchor = partAnchorBlock(); anchor.scale.set(1.15,1.15,1.15); anchor.position.set(1.5,-1.3,0); anchor.traverse(o=>o.userData.step=1); scene.add(anchor);
+      const rodHw = partGuyHardware(); rodHw.scale.set(.9,.9,.9); rodHw.position.set(1.35,-.95,0); rodHw.rotation.z = -.9; rodHw.traverse(o=>o.userData.step=2); scene.add(rodHw);
+      const wireLen = Math.sqrt(Math.pow(1.5,2)+Math.pow(2.6+1.15,2));
+      const wireAngle = Math.atan2(1.5, 2.6+1.15) - Math.PI/2;
+      const wireLow = cyl(.018,.018,wireLen*.55,MAT.steelDark,8); wireLow.position.set(1.0,-.35,0); wireLow.rotation.z = wireAngle; wireLow.traverse(o=>o.userData.step=3); scene.add(wireLow);
+      const insG = ring(.08,.025,MAT.porcelain,16); insG.position.set(1.0,-.35,0); insG.rotation.x=Math.PI/2; insG.rotation.z=wireAngle; insG.traverse(o=>o.userData.step=3); scene.add(insG);
+      const buckle = partGuyHardware(); buckle.scale.set(1.1,1.1,1.1); buckle.position.set(.68,.0,0); buckle.rotation.z=wireAngle; buckle.traverse(o=>o.userData.step=3); scene.add(buckle);
+      const wireHigh = cyl(.02,.02,wireLen*.45,MAT.steel,8); wireHigh.position.set(.35,1.05,0); wireHigh.rotation.z = wireAngle; wireHigh.traverse(o=>o.userData.step=4); scene.add(wireHigh);
+      return {focus:new THREE.Vector3(.6,0,0), radius:4.2};
+    }
+    if(guideId==='arrester'){
+      const pole = poleStub(2.2); scene.add(pole);
+      const br = partBracket(); br.scale.set(1.2,1.2,1.2); br.position.set(.13,1.9,0); br.traverse(o=>o.userData.step=1); scene.add(br);
+      const ar = partArresterBody(); ar.scale.set(1.3,1.3,1.3); ar.position.set(.32,1.55,0); ar.traverse(o=>o.userData.step=2); scene.add(ar);
+      const lineWire = cyl(.02,.02,.4,MAT.cableDark,8); lineWire.rotation.z=Math.PI/2.3; lineWire.position.set(.32,2.2,0); lineWire.traverse(o=>o.userData.step=3); scene.add(lineWire);
+      const groundWire = cyl(.018,.018,1.7,MAT.cableDark,8); groundWire.position.set(.42,.85,0); groundWire.traverse(o=>o.userData.step=4); scene.add(groundWire);
+      const groundRod = cyl(.03,.03,.4,MAT.steel,10); groundRod.position.set(.42,-1.15,0); groundRod.traverse(o=>o.userData.step=4); scene.add(groundRod);
+      return {focus:new THREE.Vector3(.2,1.4,0), radius:3.4};
+    }
+  }
+
+  function init(containerEl, opts){
+    destroy();
+    container = containerEl;
+    mode = opts.mode || 'detail';
+    currentStep = opts.step || 1;
+    scene = new THREE.Scene();
+    const w = container.clientWidth, h = container.clientHeight;
+    camera = new THREE.PerspectiveCamera(38, w/h, .1, 100);
+    renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.setSize(w,h);
+    renderer.setClearColor(0x000000,0);
+    container.innerHTML=''; container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff,.65));
+    const dl = new THREE.DirectionalLight(0xffffff,.9); dl.position.set(3,5,4); scene.add(dl);
+    const dl2 = new THREE.DirectionalLight(0x6fa8dc,.35); dl2.position.set(-4,2,-3); scene.add(dl2);
+
+    const grid = new THREE.GridHelper(6,24,0x2E7DC9,0x1D63A6);
+    grid.material.opacity=.35; grid.material.transparent=true; grid.position.y=-1.18;
+    scene.add(grid);
+
+    group = new THREE.Group(); scene.add(group);
+    let focusTarget = new THREE.Vector3(0,.9,0), radius = 4.2;
+    if(mode==='guide'){
+      const info = buildGuideScene(opts.guideId, group);
+      if(info){ focusTarget = info.focus; radius = info.radius; }
+    } else {
+      const fn = SHAPE_BUILDERS[opts.shape];
+      if(fn) fn(group);
+      const b = new THREE.Box3().setFromObject(group);
+      const c = b.getCenter(new THREE.Vector3()); const size = b.getSize(new THREE.Vector3());
+      focusTarget = c; radius = Math.max(size.x,size.y,size.z)*2.1+1.4;
+    }
+    sph = {theta:.65, phi:1.05, radius};
+    camera.userData.target = focusTarget;
+
+    applyStepVisibility();
+    updateCamera();
+    attachControls();
+    animate();
+    new ResizeObserver(()=>onResize()).observe(container);
+  }
+
+  function applyStepVisibility(){
+    if(mode!=='guide'){ group.traverse(o=>{ if(o.isMesh){ o.visible=true; if(o.userData.baseColor!=null) o.material.emissiveIntensity = o.material.emissiveIntensity; } }); return; }
+    group.traverse(o=>{
+      if(!o.isMesh) return;
+      const st = o.userData.step ?? 0;
+      o.visible = st <= currentStep;
+      if(st === currentStep && st>0){
+        if(!o.userData._origMat) o.userData._origMat = o.material;
+        o.material = MAT.highlight;
+      } else {
+        if(o.userData._origMat) o.material = o.userData._origMat;
+      }
+    });
+  }
+
+  function setStep(n){ currentStep = n; applyStepVisibility(); }
+
+  function updateCamera(){
+    const t = camera.userData.target || new THREE.Vector3(0,.9,0);
+    const {theta, phi, radius} = sph;
+    camera.position.set(
+      t.x + radius*Math.sin(phi)*Math.sin(theta),
+      t.y + radius*Math.cos(phi),
+      t.z + radius*Math.sin(phi)*Math.cos(theta)
+    );
+    camera.lookAt(t);
+  }
+
+  function onResize(){
+    if(!container||!renderer) return;
+    const w = container.clientWidth, h = container.clientHeight;
+    if(w<10||h<10) return;
+    camera.aspect = w/h; camera.updateProjectionMatrix();
+    renderer.setSize(w,h);
+  }
+
+  function attachControls(){
+    const el = renderer.domElement;
+    el.style.touchAction='none';
+    el.addEventListener('pointerdown', e=>{ dragging=true; lastX=e.clientX; lastY=e.clientY; autoRotate=false; el.setPointerCapture(e.pointerId); });
+    el.addEventListener('pointermove', e=>{
+      if(!dragging) return;
+      const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
+      sph.theta -= dx*.008; sph.phi = Math.min(1.45, Math.max(.35, sph.phi - dy*.008));
+      idleTimer = 0;
+    });
+    window.addEventListener('pointerup', ()=>{ dragging=false; });
+    el.addEventListener('wheel', e=>{ e.preventDefault(); sph.radius = Math.min(9, Math.max(1.4, sph.radius + e.deltaY*.0025*sph.radius)); autoRotate=false; idleTimer=0; }, {passive:false});
+  }
+
+  function zoom(dir){ sph.radius = Math.min(9, Math.max(1.4, sph.radius + dir*.5)); autoRotate=false; }
+  function resetView(){ autoRotate=true; sph.theta=.65; sph.phi=1.05; }
+
+  function animate(){
+    raf = requestAnimationFrame(animate);
+    clock += 0.016;
+    if(autoRotate && !dragging){ sph.theta += .0035; }
+    else { idleTimer += 1; if(idleTimer > 240){ autoRotate = true; } }
+    updateCamera();
+    if(mode==='guide'){
+      group.traverse(o=>{ if(o.isMesh && o.userData.step===currentStep && o.userData.step>0){ const s = 1+Math.sin(clock*3)*.035; o.scale.setScalar(s); } });
+    }
+    renderer.render(scene, camera);
+  }
+
+  function destroy(){
+    if(raf) cancelAnimationFrame(raf);
+    if(renderer){ renderer.dispose(); }
+    renderer=null; scene=null; camera=null; group=null; container=null;
+    dragging=false; autoRotate=true; idleTimer=0;
+  }
+
+  return {init, destroy, setStep, zoom, resetView};
+})();
+
+/* ============================================================
+   SCREEN RENDERERS
+   ============================================================ */
+const screenEl = ()=>document.getElementById('screen');
+
+function setTopbar({title, eyebrow, showBack, dark}){
+  document.getElementById('topTitle').textContent = title;
+  document.getElementById('topEyebrow').textContent = eyebrow || 'PLN · DISTRIBUSI TM/TR';
+  document.getElementById('backBtn').style.display = showBack ? 'flex' : 'none';
+  document.getElementById('logoBadge').style.display = showBack ? 'none' : 'flex';
+}
+
+function renderBottomNav(){
+  document.querySelectorAll('.nav-btn').forEach(btn=>{
+    const r = btn.dataset.route;
+    btn.classList.toggle('active', r===state.route || (r==='catalog' && state.route==='detail') || (r==='catalog' && state.route==='guide'));
+  });
+}
+
+function itemThumbSvg(item){ return ICONS[item.cat] || ''; }
+function levelClass(level){ if(level==='TM') return 'lvl-TM'; if(level==='TR') return 'lvl-TR'; return 'lvl-mix'; }
+
+function cardHtml(item){
+  return `
+  <div class="item-card" data-item="${item.id}">
+    <div class="item-thumb" style="color:var(--blue-700)">
+      ${itemThumbSvg(item)}
+      <div class="badge-level ${levelClass(item.level)}">${item.level}</div>
+      <div class="badge-3d">3D</div>
+    </div>
+    <div class="item-info">
+      <h4>${item.name}</h4>
+      <div class="code">${item.code}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- HOME ---------------- */
+function renderHome(){
+  setTopbar({title:'Distribusi AR', eyebrow:'PLN · MODUL PELATIHAN'});
+  screenEl().innerHTML = `
+    <div class="search-bar" id="homeSearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" placeholder="Cari material, mis. Isolator, Arrester..." id="homeSearchInput" readonly>
+    </div>
+
+    <div class="hero-wrap">
+      <div class="hero-canvas-holder" id="heroCanvas"></div>
+      <div class="hero-drag-hint">${SMALL_ICON.hand}<span>Seret untuk memutar objek 3D</span></div>
+      <div class="hero-text">
+        <div class="hero-eyebrow">Cross Arm TM · Live Preview</div>
+        <div class="hero-title">Kebayang cara pasangnya,<br>sebelum ke lapangan.</div>
+        <p class="hero-sub">Lihat setiap material distribusi dalam 3D, putar dari segala sudut, lalu ikuti panduan instalasi langkah demi langkah — seperti manual perakitan.</p>
+        <div class="hero-chips">
+          <div class="hero-chip">${SMALL_ICON.rotate}<span>Putar 360°</span></div>
+          <div class="hero-chip">${SMALL_ICON.layers}<span>Panduan Bertahap</span></div>
+          <div class="hero-chip">${SMALL_ICON.ar}<span>Mode AR</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px section-row">
+      <div class="section-title">Kategori Material</div>
+    </div>
+    <div class="cat-grid">
+      ${CATEGORIES.map(c=>`
+        <div class="cat-card" data-cat="${c.id}">
+          <div class="cat-icon" style="background:${c.color};color:#fff;">${ICONS[c.icon]}</div>
+          <h3>${c.name}</h3>
+          <p>${c.desc}</p>
+          <div class="cat-count">${ITEMS.filter(i=>i.cat===c.id).length} material</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="px section-row">
+      <div class="section-title">Lanjutkan Belajar</div>
+      <span class="link-more" id="seeAllProgress">Lihat semua</span>
+    </div>
+    ${continueCardHtml()}
+  `;
+  document.getElementById('homeSearch').onclick = ()=>go('catalog',{query:''});
+  document.getElementById('seeAllProgress').onclick = ()=>go('progress');
+  document.querySelectorAll('.cat-card').forEach(el=>el.onclick=()=>go('catalog',{cat:el.dataset.cat}));
+  document.getElementById('continueCardTarget')?.addEventListener('click', ()=>{
+    const gid = mostRecentGuide();
+    go('guide',{guideId:gid, step:1});
+  });
+
+  Viewer3D.init(document.getElementById('heroCanvas'), {mode:'detail', shape:'crossArm'});
+}
+
+function mostRecentGuide(){
+  const entries = Object.entries(progressState).filter(([k,v])=>v<100);
+  if(entries.length===0) return Object.keys(GUIDES)[0];
+  entries.sort((a,b)=>b[1]-a[1]);
+  return entries[0][0];
+}
+function continueCardHtml(){
+  const gid = mostRecentGuide();
+  const g = GUIDES[gid];
+  const pct = progressState[gid];
+  return `
+  <div class="continue-card" id="continueCardTarget">
+    <div class="continue-thumb">${SMALL_ICON.layers}</div>
+    <div class="continue-body">
+      <div class="lbl">${g.code} · ${g.level}</div>
+      <h4>${g.title}</h4>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="continue-pct">${pct}% selesai · ${g.duration}</div>
+    </div>
+    <div class="continue-arrow">${SMALL_ICON.arrowR}</div>
+  </div>`;
+}
+
+/* ---------------- CATALOG ---------------- */
+function renderCatalog(){
+  const p = state.params || {};
+  const activeCat = p.cat || 'all';
+  const query = (p.query || '').toLowerCase();
+  setTopbar({title:'Katalog Material', eyebrow:'16 MATERIAL SUTM/SUTR', showBack:true});
+
+  const chips = [{id:'all', name:'Semua'}, ...CATEGORIES];
+  let filtered = ITEMS.filter(i=>{
+    const catOk = activeCat==='all' || i.cat===activeCat;
+    const qOk = !query || i.name.toLowerCase().includes(query) || i.code.toLowerCase().includes(query);
+    return catOk && qOk;
+  });
+
+  screenEl().innerHTML = `
+    <div class="search-bar" style="margin-top:16px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="catSearchInput" placeholder="Cari nama atau kode material..." value="${p.query||''}">
+    </div>
+    <div class="chip-row">
+      ${chips.map(c=>`<div class="filter-chip ${c.id===activeCat?'active':''}" data-cat="${c.id}">${c.name}</div>`).join('')}
+    </div>
+    <div class="item-grid">
+      ${filtered.length ? filtered.map(cardHtml).join('') : ''}
+    </div>
+    ${filtered.length ? '' : '<div class="empty-msg">Material tidak ditemukan. Coba kata kunci lain.</div>'}
+  `;
+  document.querySelectorAll('.filter-chip').forEach(el=>el.onclick=()=>go('catalog',{cat:el.dataset.cat, query:p.query||''}, false));
+  document.querySelectorAll('.item-card').forEach(el=>el.onclick=()=>go('detail',{id:el.dataset.item}));
+  const input = document.getElementById('catSearchInput');
+  input.oninput = ()=>{ state.params = {cat:activeCat, query:input.value}; renderCatalogGridOnly(); };
+}
+function renderCatalogGridOnly(){
+  const p = state.params;
+  const activeCat = p.cat||'all'; const query=(p.query||'').toLowerCase();
+  const filtered = ITEMS.filter(i=>{
+    const catOk = activeCat==='all' || i.cat===activeCat;
+    const qOk = !query || i.name.toLowerCase().includes(query) || i.code.toLowerCase().includes(query);
+    return catOk && qOk;
+  });
+  const grid = document.querySelector('.item-grid');
+  grid.innerHTML = filtered.map(cardHtml).join('');
+  document.querySelectorAll('.item-card').forEach(el=>el.onclick=()=>go('detail',{id:el.dataset.item}));
+  let empty = document.querySelector('.empty-msg');
+  if(!filtered.length && !empty){ grid.insertAdjacentHTML('afterend', '<div class="empty-msg">Material tidak ditemukan. Coba kata kunci lain.</div>'); }
+  if(filtered.length && empty){ empty.remove(); }
+}
+
+/* ---------------- DETAIL ---------------- */
+function renderDetail(){
+  const item = ITEMS.find(i=>i.id===state.params.id);
+  if(!item){ go('catalog',{},false); return; }
+  const cat = CATEGORIES.find(c=>c.id===item.cat);
+  setTopbar({title:item.name, eyebrow:cat.name.toUpperCase(), showBack:true});
+
+  const hasGuide = !!item.guide;
+  screenEl().innerHTML = `
+    <div class="viewer-wrap" id="detailCanvas">
+      <div class="viewer-controls">
+        <div class="vc-btn" id="zoomIn">${SMALL_ICON.zoomin}</div>
+        <div class="vc-btn" id="zoomOut">${SMALL_ICON.zoomout}</div>
+        <div class="vc-btn" id="resetV">${SMALL_ICON.reset}</div>
+      </div>
+      <div class="viewer-hint">${SMALL_ICON.hand}<span>Seret · cubit untuk zoom</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tags">
+        <div class="tag tag-cat">${cat.name}</div>
+        <div class="tag" style="background:${item.level==='TR'?'#FDE9CE':'#DCE9F7'};color:${item.level==='TR'?'#9A5A00':'var(--blue-800)'}">Tegangan ${item.level}</div>
+      </div>
+      <div class="detail-title">${item.name}</div>
+      <div class="detail-code">Kode Referensi · ${item.code}</div>
+      <div class="spec-row">
+        <div class="spec-box">${SMALL_ICON.layers}<div class="v">${item.pieces}</div><div class="l">Bagian</div></div>
+        <div class="spec-box">${SMALL_ICON.book}<div class="v">${item.level}</div><div class="l">Level Tegangan</div></div>
+        <div class="spec-box">${SMALL_ICON.clock}<div class="v">${hasGuide?'~8m':'—'}</div><div class="l">Baca Panduan</div></div>
+      </div>
+      <div class="detail-desc">${item.blurb}</div>
+      <div class="cta-stack">
+        ${hasGuide ? `<button class="btn-primary" id="startGuideBtn">${SMALL_ICON.play}Mulai Panduan Instalasi 3D</button>` : `<div class="btn-disabled">Panduan langkah demi langkah untuk material ini segera hadir</div>`}
+        <button class="btn-secondary" id="arModeBtn">${SMALL_ICON.ar}Lihat Konsep Mode AR</button>
+      </div>
+    </div>
+  `;
+  Viewer3D.init(document.getElementById('detailCanvas'), {mode:'detail', shape:item.shape});
+  document.getElementById('zoomIn').onclick = ()=>Viewer3D.zoom(-.5);
+  document.getElementById('zoomOut').onclick = ()=>Viewer3D.zoom(.5);
+  document.getElementById('resetV').onclick = ()=>Viewer3D.resetView();
+  if(hasGuide) document.getElementById('startGuideBtn').onclick = ()=>go('guide',{guideId:item.guide, step:1});
+  document.getElementById('arModeBtn').onclick = ()=>{
+    if(hasGuide){ go('guide',{guideId:item.guide, step:1, ar:true}); }
+    else { showToast('Mode AR tersedia di modul panduan bertahap'); }
+  };
+}
+
+/* ---------------- GUIDE ---------------- */
+function renderGuide(){
+  const gid = state.params.guideId;
+  const guide = GUIDES[gid];
+  if(!guide){ go('home',{},false); return; }
+  let step = state.params.step || 1;
+  const total = guide.steps.length;
+  setTopbar({title:guide.title, eyebrow:guide.code+' · '+guide.level, showBack:true});
+
+  screenEl().innerHTML = `
+    <div id="guide-canvas-wrap">
+      <div class="ar-scene-bg" id="arBg"></div>
+      <div class="ar-reticle" id="arReticle"></div>
+      <div class="ar-note" id="arNote">MODE AR (DEMO) · KAMERA DISIMULASIKAN</div>
+      <div id="guideCanvasHolder" style="position:absolute;inset:0;"></div>
+      <div class="guide-progress">
+        ${Array.from({length:total}).map((_,i)=>`<div class="seg"><i style="width:${i<step?'100':'0'}%"></i></div>`).join('')}
+      </div>
+      <div class="guide-topline">
+        <div class="guide-steplabel">LANGKAH ${step} / ${total}</div>
+        <div class="ar-toggle" id="arToggle">${SMALL_ICON.ar}<span>Mode AR</span></div>
+      </div>
+      <div class="guide-parttag" id="partTag">${guide.steps[step-1].parts[0]}</div>
+      <div class="guide-vc">
+        <div class="vc-btn" id="gZoomIn" style="background:rgba(255,255,255,.9)">${SMALL_ICON.zoomin}</div>
+        <div class="vc-btn" id="gZoomOut" style="background:rgba(255,255,255,.9)">${SMALL_ICON.zoomout}</div>
+        <div class="vc-btn" id="gReset" style="background:rgba(255,255,255,.9)">${SMALL_ICON.reset}</div>
+      </div>
+    </div>
+    <div class="guide-sheet">
+      <div class="guide-step-eyebrow">Langkah ${step} dari ${total}</div>
+      <div class="guide-step-title">${guide.steps[step-1].title}</div>
+      <div class="guide-step-text">${guide.steps[step-1].text}</div>
+      <div class="parts-list">
+        <h5>Material Digunakan</h5>
+        ${guide.steps[step-1].parts.map(p=>`<div class="part-row"><div class="part-check">${SMALL_ICON.check}</div><span>${p}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="guide-nav">
+      ${step>1 ? `<button class="nav-step-btn nsb-prev" id="prevStep">${SMALL_ICON.arrowL}Sebelumnya</button>` : `<button class="nav-step-btn nsb-prev" id="exitGuide">Keluar</button>`}
+      ${step<total ? `<button class="nav-step-btn nsb-next" id="nextStep">Selanjutnya${SMALL_ICON.arrowR}</button>` : `<button class="nav-step-btn nsb-finish" id="finishGuide">${SMALL_ICON.check}Tandai Selesai</button>`}
+    </div>
+  `;
+
+  Viewer3D.init(document.getElementById('guideCanvasHolder'), {mode:'guide', guideId:gid, step});
+  document.getElementById('gZoomIn').onclick=()=>Viewer3D.zoom(-.5);
+  document.getElementById('gZoomOut').onclick=()=>Viewer3D.zoom(.5);
+  document.getElementById('gReset').onclick=()=>Viewer3D.resetView();
+
+  let arOn = !!state.params.ar;
+  const applyAr = ()=>{
+    document.getElementById('arToggle').classList.toggle('on', arOn);
+    document.getElementById('arBg').classList.toggle('show', arOn);
+    document.getElementById('arReticle').classList.toggle('show', arOn);
+    document.getElementById('arNote').classList.toggle('show', arOn);
+    document.getElementById('guide-canvas-wrap').style.background = arOn ? '' : 'var(--blue-950)';
+    if(arOn) drawArBackground();
+  };
+  applyAr();
+  document.getElementById('arToggle').onclick = ()=>{ arOn=!arOn; applyAr(); showToast(arOn?'Mode AR (demo) aktif':'Mode AR nonaktif'); };
+
+  if(step>1) document.getElementById('prevStep').onclick = ()=>go('guide',{guideId:gid, step:step-1, ar:arOn}, false);
+  if(step<total) document.getElementById('nextStep').onclick = ()=>go('guide',{guideId:gid, step:step+1, ar:arOn}, false);
+  if(step===1) document.getElementById('exitGuide').onclick = ()=>goBack();
+  if(step===total) document.getElementById('finishGuide').onclick = ()=>{
+    progressState[gid]=100; showToast('Modul ditandai selesai — kerja bagus!'); go('progress');
+  };
+  if(step>1 && progressState[gid] < Math.round((step/total)*100)) progressState[gid] = Math.round((step/total)*100);
+}
+
+function drawArBackground(){
+  const el = document.getElementById('arBg');
+  el.innerHTML = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block;">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#274a68"/><stop offset="100%" stop-color="#0e2438"/>
+      </linearGradient>
+      <linearGradient id="grnd" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#2c3a2e"/><stop offset="100%" stop-color="#141d16"/>
+      </linearGradient>
+    </defs>
+    <rect width="400" height="210" fill="url(#sky)"/>
+    <rect y="210" width="400" height="90" fill="url(#grnd)"/>
+    <circle cx="335" cy="45" r="26" fill="#3a5a78" opacity=".55"/>
+    <path d="M0 215 Q60 200 130 214 T260 210 T400 216" stroke="#0e2438" stroke-width="3" fill="none" opacity=".4"/>
+  </svg>`;
+}
+
+/* ---------------- PROGRESS ---------------- */
+function renderProgress(){
+  setTopbar({title:'Progres Belajar', eyebrow:'MODUL & SERTIFIKASI'});
+  const vals = Object.values(progressState);
+  const doneCount = vals.filter(v=>v>=100).length;
+  const avg = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  const R=30, C=2*Math.PI*R;
+  screenEl().innerHTML = `
+    <div class="ring-card">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="${R}" stroke="rgba(255,255,255,.18)" stroke-width="7" fill="none"/>
+        <circle cx="36" cy="36" r="${R}" stroke="#FFC629" stroke-width="7" fill="none" stroke-linecap="round"
+          stroke-dasharray="${C}" stroke-dashoffset="${C-(C*avg/100)}" transform="rotate(-90 36 36)"/>
+        <text x="36" y="41" text-anchor="middle" font-family="Big Shoulders Display" font-weight="800" font-size="18" fill="#fff">${avg}%</text>
+      </svg>
+      <div class="ring-info">
+        <div class="big">${doneCount} dari ${vals.length} modul selesai</div>
+        <div class="small">Terus lengkapi panduan instalasi 3D untuk menaikkan skor kesiapan lapangan Anda.</div>
+      </div>
+    </div>
+    <div class="px section-row"><div class="section-title">Semua Modul</div></div>
+    ${Object.entries(GUIDES).map(([gid,g])=>{
+      const pct = progressState[gid];
+      const status = pct>=100 ? {c:'st-done',t:'Selesai'} : pct>0 ? {c:'st-progress',t:'Sedang Berjalan'} : {c:'st-notstarted',t:'Belum Dimulai'};
+      return `<div class="module-row" data-guide="${gid}">
+        <div class="module-icon">${SMALL_ICON.layers}</div>
+        <div class="module-body">
+          <h4>${g.title}</h4>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="status-chip ${status.c}">${status.t} · ${pct}%</div>
+        </div>
+        <div class="continue-arrow">${SMALL_ICON.arrowR}</div>
+      </div>`;
+    }).join('')}
+    <div style="height:8px"></div>
+  `;
+  document.querySelectorAll('.module-row').forEach(el=>el.onclick=()=>{
+    const gid = el.dataset.guide; const pct = progressState[gid];
+    const total = GUIDES[gid].steps.length;
+    const startStep = pct>=100 ? 1 : Math.max(1, Math.round((pct/100)*total));
+    go('guide',{guideId:gid, step:startStep});
+  });
+}
+
+/* ---------------- PROFILE ---------------- */
+function renderProfile(){
+  setTopbar({title:'Profil', eyebrow:'AKUN SAYA'});
+  screenEl().innerHTML = `
+    <div class="profile-card">
+      <div class="avatar">KP</div>
+      <div>
+        <h3>Karyawan PLN</h3>
+        <p>Unit Pelaksana Distribusi · Teknisi Jaringan</p>
+      </div>
+    </div>
+    <div class="settings-list">
+      <div class="settings-row">${SMALL_ICON.book}<span>Tentang Modul Pelatihan</span>${SMALL_ICON.arrowR}</div>
+      <div class="settings-row">${SMALL_ICON.ar}<span>Panduan Penggunaan Mode AR</span>${SMALL_ICON.arrowR}</div>
+      <div class="settings-row">${SMALL_ICON.help}<span>Bantuan & Pusat Dukungan</span>${SMALL_ICON.arrowR}</div>
+      <div class="settings-row">${SMALL_ICON.info}<span>Tentang Aplikasi</span>${SMALL_ICON.arrowR}</div>
+      <div class="settings-row" style="color:var(--red)">${SMALL_ICON.logout}<span style="color:var(--red)">Keluar</span></div>
+    </div>
+  `;
+  document.querySelectorAll('.settings-row').forEach(el=>el.onclick=()=>showToast('Fitur ini adalah bagian dari konsep prototipe'));
+}
+
+/* ============================================================
+   MAIN RENDER / INIT
+   ============================================================ */
+function render(){
+  if(state.route!=='home' && state.route!=='detail' && state.route!=='guide') Viewer3D.destroy();
+  document.getElementById('screen').scrollTop = 0;
+  if(state.route==='home') renderHome();
+  else if(state.route==='catalog') renderCatalog();
+  else if(state.route==='detail') renderDetail();
+  else if(state.route==='guide') renderGuide();
+  else if(state.route==='progress') renderProgress();
+  else if(state.route==='profile') renderProfile();
+  renderBottomNav();
+}
+
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const r = btn.dataset.route;
+    state.history = [];
+    go(r, {}, false);
+  });
+});
+document.getElementById('backBtn').addEventListener('click', goBack);
+document.getElementById('searchBtn').addEventListener('click', ()=>go('catalog',{query:''}));
+
+render();
+</script>
+</body>
 </html>
